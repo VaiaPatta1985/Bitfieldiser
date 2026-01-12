@@ -8,11 +8,9 @@ PREFIX = 'bitfieldised_'
 
 def bitfieldise(filename_in: str, bitarr: str, dim1: int , dim2: int) -> None:
     split_infile_path = path.split(filename_in)
-    bare_filename = split_infile_path[len(split_infile_path) - 1]
+    bare_filename = split_infile_path[1]
     prefixed_filename = PREFIX + bare_filename
-    split_outfile_path = list(split_infile_path[0:len(split_infile_path) - 1])
-    split_outfile_path.append(prefixed_filename)
-    filename_out = path.join(split_outfile_path)
+    filename_out = path.join(split_infile_path[0], prefixed_filename)
     nn1 = dim1 / 8
     n1 = int(nn1)
     if n1 == nn1:

@@ -16,9 +16,12 @@ if __name__ == '__main__':
                       help='TODO')
     args.add_argument('dim2', type=int, required=True,
                       help='TODO')
+    args.add_argument('function_block', type=str, required=True,
+                      help='TODO')
     parsed_args = args.parse_args()
     input_file = parsed_args.input_file
     array = parsed_args.array
     dim1 = parsed_args.dim1
     dim2 = parsed_args.dim2
-    bitfieldise(input_file, array, dim1, dim2)
+    function_block = parsed_args.function_block
+    bitfieldise(input_file, array, dim1, dim2, function_block)

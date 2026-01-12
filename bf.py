@@ -1,19 +1,26 @@
+"""
+TODO
+"""
 from math import log2
 from os import path
 import json
-# TODO: mono gia th main, h gia sygkekrimenh synarthsh
 
 
 C_TYPE_USED = ['char', 'short', 'long']
 PREFIX = 'bitfieldised_'
 
 
-def get_preamble(my_json:json) -> list[str]:
+def get_preamble(my_json: json) -> list[str]:
+    """
+    Takes the json dump of the parsed C code and returns the preamble.
+    :param my_json: json dump with parsed code
+    :return: lines of preamble in a list
+    """
     preamble_lines = ['']  # TODO: get preamble from json
     return preamble_lines
 
 
-def replace_array(my_json: json, my_type: str, a: int, b: int, c: int, d: int) -> list[str]:
+def replace_array(my_json: json, my_type: str, a: int, b: int, c: int, d: int, fun: str) -> list[str]:
     # periptwseis:
     # den ksekina arrayname[...][...] apo edw
     # typos mplampla,arrayname[x][y],mplamplampla;->union my_union arrayname[x];typos mplampla,mplamplampla;
@@ -33,11 +40,16 @@ def replace_array(my_json: json, my_type: str, a: int, b: int, c: int, d: int) -
 
 
 def make_json(filename: str) -> json:
+    """
+    Parses a C program and returns a json dump with the syntax analysis.
+    :param filename: file with C code
+    :return: json dump of parsed code
+    """
     ep_out = ''  # TODO: run external parser
     return json.loads(ep_out)
 
 
-def bitfieldise(filename_in: str, bitarr: str, dim1: int , dim2: int) -> None:
+def bitfieldise(filename_in: str, bitarr: str, dim1: int , dim2: int, fb: str) -> None:
     json_in = make_json(filename_in)
     preamble = get_preamble(json_in)
     split_infile_path = path.split(filename_in)
@@ -51,7 +63,7 @@ def bitfieldise(filename_in: str, bitarr: str, dim1: int , dim2: int) -> None:
     c_type = C_TYPE_USED[int(log2(n1))]
     n2 = 2 ** (n1 * 8) - 1
     n1 = n1 * 8 - 1
-    altered_program = replace_array(json_in, c_type, n1, n2, dim1, dim2)
+    altered_program = replace_array(json_in, c_type, n1, n2, dim1, dim2, fb)
     lines_to_write: list[str] = [
         '#define BITFIELDISED_SIZE1 ' + str(dim1) + '\n',
         '#define BITFIELDISED_SIZE2 ' + str(dim2) + '\n',

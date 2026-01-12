@@ -1,9 +1,10 @@
-import math
+from math import log2
 from os import path
 import json
+# TODO: mono gia th main, h gia sygkekrimenh synarthsh
 
 
-C_TYPE_TO_REPLACE = ['char', 'short', 'long']  # TODO others?
+C_TYPE_USED = ['char', 'short', 'long']
 PREFIX = 'bitfieldised_'
 
 
@@ -13,6 +14,21 @@ def get_preamble(my_json:json) -> list[str]:
 
 
 def replace_array(my_json: json, my_type: str, a: int, b: int, c: int, d: int) -> list[str]:
+    # periptwseis:
+    # den ksekina arrayname[...][...] apo edw
+    # typos mplampla,arrayname[x][y],mplamplampla;->union my_union arrayname[x];typos mplampla,mplamplampla;
+    # typos mplampla,arrayname[x][y];->typos mplampla;union my_union arrayname[x];
+    # typos arrayname[x][y],mplampla;->typos mplampla;union my_union arrayname[x];
+    # typos arrayname[x][y];->union my_union arrayname[x];
+    # initialisation
+    # arrayname[a][b]=mplampla;->set(arrayname,a,b,mplampla);
+    # mplamplampla(arrayname[a][b]=mplampla)mplamplamplampla->set(arrayname,a,b,mplampla);mplamplampla(mplampla)mplamplamplampla
+    # arrayname[a][b]&=mplampla;->set(arrayname,a,b,get(arrayname,a,b)&mplampla);
+    # arrayname[a][b]|=mplampla;->set(arrayname,a,b,get(arrayname,a,b)|mplampla);
+    # arrayname[a][b]^=mplampla;->set(arrayname,a,b,get(arrayname,a,b)^mplampla);
+    # arrayname[a][b]&&=mplampla;->set(arrayname,a,b,get(arrayname,a,b)&&mplampla);
+    # arrayname[a][b]||=mplampla;->set(arrayname,a,b,get(arrayname,a,b)||mplampla);
+    # an to entopise alla den einai tipota apo ta parapanw tote exagwgh timhs: arrayname[a][b]->get(arrayname,a,b)
     return ['']  # TODO
 
 
@@ -32,7 +48,7 @@ def bitfieldise(filename_in: str, bitarr: str, dim1: int , dim2: int) -> None:
     n1 = int(nn1)
     if n1 == nn1:
         n1 += 1
-    c_type = C_TYPE_TO_REPLACE[int(math.log(n1, 2))]
+    c_type = C_TYPE_USED[int(log2(n1))]
     n2 = 2 ** (n1 * 8) - 1
     n1 = n1 * 8 - 1
     altered_program = replace_array(json_in, c_type, n1, n2, dim1, dim2)
@@ -58,7 +74,8 @@ def bitfieldise(filename_in: str, bitarr: str, dim1: int , dim2: int) -> None:
         '\n',
     ] + altered_program + [
         'void set(union my_union pm[BITFIELDISED_SIZE2],int a,int b,char k){\n',
-        '	if(k==1)pm[a].int_data|=(unsigned)1<<(NUMBER1-b);else if(!k)pm[a].int_data&=(unsigned)NUMBER2<<(NUMBER1-b);else printf(\"wrong input\\n\");\n',
+        '	if(k==1)pm[a].int_data|=(unsigned)1<<(NUMBER1-b);' + \
+        'else if(!k)pm[a].int_data&=(unsigned)NUMBER2<<(NUMBER1-b);else printf(\"wrong input\\n\");\n',
         '}\n',
         '\n',
         'void print(union my_union pm[BITFIELDISED_SIZE2]){\n',

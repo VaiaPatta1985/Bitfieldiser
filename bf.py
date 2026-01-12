@@ -1,6 +1,5 @@
-#imports
 
 
-#constants
-MAX_TYPE_NAME = 6
-MAX_LINE = 1000
+
+def bitfieldise(filename_in, bitarr, dim1, dim2):
+    pass

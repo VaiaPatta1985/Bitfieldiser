@@ -2,16 +2,17 @@
 TODO
 """
 
+
+import argparse
 from math import log2
 from os import path
 import json
-from typing import Any
 
 C_TYPE_USED = ['char', 'short', 'long']
 PREFIX = 'bitfieldised_'
 
 
-def get_preamble(my_json: Any) -> list[str]:
+def get_preamble(my_json: json) -> list[str]:
     """
     Takes the json dump of the parsed C code and returns the preamble.
     :param my_json: json dump with parsed code
@@ -21,7 +22,7 @@ def get_preamble(my_json: Any) -> list[str]:
     return preamble_lines
 
 
-def replace_array(my_json: Any, my_type: str, a: int, b: int, c: int, d: int, fun: str) -> list[str]:
+def replace_array(my_json: json, my_type: str, a: int, b: int, c: int, d: int, fun: str) -> list[str]:
     """
     TODO
     :param my_json:
@@ -51,7 +52,7 @@ def replace_array(my_json: Any, my_type: str, a: int, b: int, c: int, d: int, fu
     return ['']  # TODO
 
 
-def make_json(filename: str) -> Any:
+def make_json(filename: str) -> json:
     """
     Parses a C program and returns a json dump with the syntax analysis.
     :param filename: file with C code
@@ -130,3 +131,28 @@ def bitfieldise(filename_in: str, bitarr: str, dim1: int , dim2: int, fb: str) -
 
     with open(filename_out, 'w', encoding='UTF-8') as f_out:
         f_out.writelines(lines_to_write)
+
+
+if __name__ == '__main__':
+    args = argparse.ArgumentParser('bitfieldiser',
+                                   usage='TODO',
+                                   description='TODO',
+                                   epilog='TODO',
+                                   add_help=True, allow_abbrev=True, exit_on_error=True)  # should be default anyway
+    args.add_argument('input_file', type=str, required=True,
+                      help='TODO')
+    args.add_argument('array', type=str, required=True,
+                      help='TODO')
+    args.add_argument('dim1', type=int, required=True,
+                      help='TODO')
+    args.add_argument('dim2', type=int, required=True,
+                      help='TODO')
+    args.add_argument('function_block', type=str, required=True,
+                      help='TODO')
+    parsed_args = args.parse_args()
+    input_file = parsed_args.input_file
+    array = parsed_args.array
+    dim1 = parsed_args.dim1
+    dim2 = parsed_args.dim2
+    function_block = parsed_args.function_block
+    bitfieldise(input_file, array, dim1, dim2, function_block)
